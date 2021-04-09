@@ -1,6 +1,6 @@
 # volcano-air-quality
 
-A simple command-line monitoring tool for air-quality in Reykjavík (Háaleitisbraut/Bústaðarvegur).
+A simple command-line monitoring tool for air-quality in Reykjavík (Háaleitisbraut/Bústaðavegur).
 
 It prints pollutants (updated every hour) and graphs them (past 24 hours) inside a terminal.
 
