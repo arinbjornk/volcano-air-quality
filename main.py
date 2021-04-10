@@ -49,8 +49,8 @@ def plot(comps, data):
 
     # Convert all items to float
     data_t = [list(map(float, sublist)) for sublist in data_t]
-
     for comp, y, colour in zip(comps[1:7], data_t, colours):
+        y.reverse()
         plt.plot(y, line_marker = "*", line_color=colour, label=comp)
     # plt.nocolor()
     plt.canvas_color('none')
@@ -59,19 +59,40 @@ def plot(comps, data):
     plt.xlabel("time (/h)")
     plt.ylabel("amount (/µg per m³)")
     plt.figsize(80, 30)
+    plt.ticks(24)
+    xticks = list(range(24))
+    xlabels = [str(i - 23) for i in range(24)]
+    xlabels = [(x if i%2 == 1 else '') for i, x in enumerate(xlabels)]
+    # [l.set_visible(False) for (i,l) in enumerate(ax.xaxis.get_ticklabels()) if i % n != 0]
+    # xlabels = ['' if i in enumerate(xlabels) % 7 != 0]
+    plt.xticks(xticks, xlabels)
     plt.show()
 
-url = "https://loftgaedi.is/station/csv?filter%5BstationId%5D=72"
 
-data = []
-with closing(requests.get(url, stream=True)) as r:
-    reader = csv.reader(codecs.iterdecode(r.iter_lines(), 'utf-8'), delimiter='\t')
-    for row in reader:
-        row = row[0].split(';')
-        row = [x.replace(",", ".") for x in row]
-        data.append(row)
+def main():
+    url = "https://loftgaedi.is/station/csv?filter%5BstationId%5D=72"
 
-colours = grade_check(data[1][1:8])
-print("Updated at: {}".format(data[1][0]))
-fancy_print(data[0], data[1], colours)
-plot(data[0], data[1:])
+    data = []
+    try:
+        with closing(requests.get(url, stream=True)) as r:
+            reader = csv.reader(codecs.iterdecode(r.iter_lines(), 'utf-8'), delimiter='\t')
+            for row in reader:
+                row = row[0].split(';')
+                row = [x.replace(",", ".") for x in row]
+                data.append(row)
+    except Exception:
+        print('Data not available.')
+        quit()
+
+    colours = grade_check(data[1][1:8])
+    print("Updated at: {}".format(data[1][0]))
+    fancy_print(data[0], data[1], colours)
+    plot(data[0], data[1:])
+    try:
+        plot(data[0], data[1:])
+    except Exception:
+        print('Plot not available.')
+
+
+if __name__ == "__main__":
+    main()
