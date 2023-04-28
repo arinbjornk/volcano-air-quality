@@ -74,7 +74,7 @@ def plot(comps, data, time):
 
 
 def main():
-    url = "https://loftgaedi.is/station/csv?filter%5BstationId%5D=72"
+    url = "https://loftgaedi.is/station/csv?filter%5BstationId%5D=35"
 
     data = []
     try:
